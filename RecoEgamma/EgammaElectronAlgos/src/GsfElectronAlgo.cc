@@ -1131,12 +1131,15 @@ void GsfElectronAlgo::setCutBasedPreselectionFlag( GsfElectron * ele, const reco
 
   // HoE cuts
   LogTrace("GsfElectronAlgo") << "HoE1 : " << ele->hcalDepth1OverEcal() << ", HoE2 : " << ele->hcalDepth2OverEcal();
-  double had = ele->hcalOverEcal()*ele->superCluster()->energy() ;
+  double hoe_cone = ele->hcalDepth1OverEcal() + ele->hcalDepth2OverEcal();
+  double hoe_tower = ele->hcalDepth1OverEcalBc() + ele->hcalDepth2OverEcalBc();
   const reco::CaloCluster & seedCluster = *(ele->superCluster()->seed()) ;
   int detector = seedCluster.hitsAndFractions()[0].first.subdetId() ;
   bool HoEveto = false ;
-  if (detector==EcalBarrel && (had<cfg->maxHBarrel || (had/ele->superCluster()->energy())<cfg->maxHOverEBarrel)) HoEveto=true;
-  else if (detector==EcalEndcap && (had<cfg->maxHEndcaps || (had/ele->superCluster()->energy())<cfg->maxHOverEEndcaps)) HoEveto=true;
+  double scle = ele->superCluster()->energy();
+  if (detector==EcalBarrel && (hoe_cone*scle<cfg->maxHBarrel || (hoe_cone<cfg->maxHOverEBarrel || hoe_tower<cfg->maxHOverEBarrel))) HoEveto=true;
+  else if (detector==EcalEndcap && (hoe_cone*scle<cfg->maxHEndcaps || (hoe_cone<cfg->maxHOverEEndcaps || hoe_tower<cfg->maxHOverEEndcaps))) HoEveto=true;
+
   if ( !HoEveto ) return ;
   LogTrace("GsfElectronAlgo") << "H/E criteria are satisfied";
 

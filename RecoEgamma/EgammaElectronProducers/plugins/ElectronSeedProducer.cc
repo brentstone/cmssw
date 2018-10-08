@@ -246,23 +246,29 @@ void ElectronSeedProducer::filterClusters
 //      if ((applyHOverECut_==true)&&((hcalHelper_->hcalESum(scl)/scl.energy()) > maxHOverE_))
 //       { continue ; }
 //      sclRefs.push_back(edm::Ref<reco::SuperClusterCollection>(superClusters,i)) ;
-       double had1, had2, had, scle ;
+       double had1_cone, had2_cone, had_cone, had1_tower, had2_tower, had_tower, scle ;
 
        bool HoeVeto = false ;
        if (applyHOverECut_==true)
         {
-         had1 = hcalHelper_->hcalESumDepth1(scl);
-         had2 = hcalHelper_->hcalESumDepth2(scl);
-         had = had1+had2 ;
+         had1_cone = hcalHelper_->hcalESumDepth1(scl);
+         had2_cone = hcalHelper_->hcalESumDepth2(scl);
+         had_cone = had1_cone+had2_cone;
+
+         std::cout<<"Num towers behind cluster: "<<hcalHelper_->hcalTowersBehindClusters(scl).size()<<std::endl;
+         had1_tower = hcalHelper_->hcalESumDepth1BehindClusters(hcalHelper_->hcalTowersBehindClusters(scl));
+         had2_tower = hcalHelper_->hcalESumDepth2BehindClusters(hcalHelper_->hcalTowersBehindClusters(scl));
+         had_tower = had1_tower+had2_tower ;
+
          scle = scl.energy() ;
          int detector = scl.seed()->hitsAndFractions()[0].first.subdetId() ;
-         if (detector==EcalBarrel && (had<maxHBarrel_ || had/scle<maxHOverEBarrel_)) HoeVeto=true;
-         else if (detector==EcalEndcap && (had<maxHEndcaps_ || had/scle<maxHOverEEndcaps_)) HoeVeto=true;
+         if ( detector==EcalBarrel && (had_cone<maxHBarrel_ || had_cone/scle<maxHOverEBarrel_ || had_tower/scle<maxHOverEBarrel_)) HoeVeto=true;
+         else if( detector==EcalEndcap && (had_cone<maxHEndcaps_ || had_cone/scle<maxHOverEEndcaps_ || had_tower/scle<maxHOverEEndcaps_) ) HoeVeto=true;
          if (HoeVeto)
           {
            sclRefs.push_back(edm::Ref<reco::SuperClusterCollection>(superClusters,i)) ;
-           hoe1s.push_back(had1/scle) ;
-           hoe2s.push_back(had2/scle) ;
+           hoe1s.push_back(had1_cone/scle) ;
+           hoe2s.push_back(had2_cone/scle) ;
           }
         }
        else
