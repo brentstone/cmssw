@@ -255,15 +255,15 @@ void ElectronSeedProducer::filterClusters
          had2_cone = hcalHelper_->hcalESumDepth2(scl);
          had_cone = had1_cone+had2_cone;
 
-         std::cout<<"Num towers behind cluster: "<<hcalHelper_->hcalTowersBehindClusters(scl).size()<<std::endl;
-         had1_tower = hcalHelper_->hcalESumDepth1BehindClusters(hcalHelper_->hcalTowersBehindClusters(scl));
-         had2_tower = hcalHelper_->hcalESumDepth2BehindClusters(hcalHelper_->hcalTowersBehindClusters(scl));
+         std::vector<CaloTowerDetId> towersBc = hcalHelper_->hcalTowersBehindClusters(scl);
+         had1_tower = hcalHelper_->hcalESumDepth1BehindClusters(towersBc);
+         had2_tower = hcalHelper_->hcalESumDepth2BehindClusters(towersBc);
          had_tower = had1_tower+had2_tower ;
 
          scle = scl.energy() ;
          int detector = scl.seed()->hitsAndFractions()[0].first.subdetId() ;
-         if ( detector==EcalBarrel && (had_cone<maxHBarrel_ || had_cone/scle<maxHOverEBarrel_ || had_tower/scle<maxHOverEBarrel_)) HoeVeto=true;
-         else if( detector==EcalEndcap && (had_cone<maxHEndcaps_ || had_cone/scle<maxHOverEEndcaps_ || had_tower/scle<maxHOverEEndcaps_) ) HoeVeto=true;
+         if (detector==EcalBarrel && (had_cone<maxHBarrel_ || had_cone/scle<maxHOverEBarrel_ || had_tower/scle<maxHOverEBarrel_)) HoeVeto=true;
+         else if(detector==EcalEndcap && (had_cone<maxHEndcaps_ || had_cone/scle<maxHOverEEndcaps_ || had_tower/scle<maxHOverEEndcaps_) ) HoeVeto=true;
          if (HoeVeto)
           {
            sclRefs.push_back(edm::Ref<reco::SuperClusterCollection>(superClusters,i)) ;
