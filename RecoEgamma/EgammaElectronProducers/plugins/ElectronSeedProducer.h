@@ -88,10 +88,14 @@ class ElectronSeedProducer : public edm::stream::EDProducer<>
     //  EgammaHcalIsolation * hcalIso_ ;
     ////  CaloDualConeSelector * doubleConeSel_ ;
     //  double maxHOverE_ ;
-    double maxHOverEBarrel_ ;
-    double maxHOverEEndcaps_ ;
-    double maxHBarrel_ ;
-    double maxHEndcaps_ ;
+    double maxHOverEBarrelCone_ ;
+    double maxHOverEEndcapsCone_ ;
+    double maxHBarrelCone_ ;
+    double maxHEndcapsCone_ ;
+    double maxHOverEBarrelTower_ ;
+    double maxHOverEEndcapsTower_ ;
+    double maxHBarrelTower_ ;
+    double maxHEndcapsTower_ ;
     //  double hOverEConeSize_;
     //  double hOverEHBMinE_;
     //  double hOverEHFMinE_;
