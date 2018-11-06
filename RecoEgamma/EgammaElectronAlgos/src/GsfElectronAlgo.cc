@@ -1137,8 +1137,8 @@ void GsfElectronAlgo::setCutBasedPreselectionFlag( GsfElectron * ele, const reco
   int detector = seedCluster.hitsAndFractions()[0].first.subdetId() ;
   bool HoEveto = false ;
   double scle = ele->superCluster()->energy();
-  if (detector==EcalBarrel && (hoeCone*scle<cfg->maxHBarrelCone || hoeTower*scle<cfg->maxHBarrelTower || (hoeCone<cfg->maxHOverEBarrelCone || hoeTower<cfg->maxHOverEBarrelTower))) HoEveto=true;
-  else if (detector==EcalEndcap && (hoeCone*scle<cfg->maxHEndcapsCone || hoeTower*scle<cfg->maxHEndcapsTower || (hoeCone<cfg->maxHOverEEndcapsCone || hoeTower<cfg->maxHOverEEndcapsTower))) HoEveto=true;
+  if (detector==EcalBarrel && (hoeCone*scle<cfg->maxHBarrelCone || hoeTower*scle<cfg->maxHBarrelTower || hoeCone<cfg->maxHOverEBarrelCone || (hoeTower<cfg->maxHOverEBarrelTower && ele->pt() > cfg->HoETowerPtCut))) HoEveto=true;
+  else if (detector==EcalEndcap && (hoeCone*scle<cfg->maxHEndcapsCone || hoeTower*scle<cfg->maxHEndcapsTower || hoeCone<cfg->maxHOverEEndcapsCone || (hoeTower<cfg->maxHOverEEndcapsTower && ele->pt() > cfg->HoETowerPtCut))) HoEveto=true;
 
   if ( !HoEveto ) return ;
   LogTrace("GsfElectronAlgo") << "H/E criteria are satisfied";

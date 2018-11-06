@@ -236,6 +236,7 @@ GsfElectronBaseProducer::GsfElectronBaseProducer( const edm::ParameterSet& cfg, 
   cutsCfg_.maxHOverEEndcapsTower = cfg.getParameter<double>("maxHOverEEndcapsTower") ;
   cutsCfg_.maxHBarrelTower = cfg.getParameter<double>("maxHBarrelTower") ;
   cutsCfg_.maxHEndcapsTower = cfg.getParameter<double>("maxHEndcapsTower") ;
+  cutsCfg_.HoETowerPtCut = cfg.getParameter<double>("HoETowerPtCut") ;
 
   cutsCfg_.maxDeltaEtaBarrel = cfg.getParameter<double>("maxDeltaEtaBarrel") ;
   cutsCfg_.maxDeltaEtaEndcaps = cfg.getParameter<double>("maxDeltaEtaEndcaps") ;
@@ -269,6 +270,7 @@ GsfElectronBaseProducer::GsfElectronBaseProducer( const edm::ParameterSet& cfg, 
   cutsCfgPflow_.maxHOverEEndcapsTower = cfg.getParameter<double>("maxHOverEEndcapsPflowTower") ;
   cutsCfgPflow_.maxHBarrelTower = cfg.getParameter<double>("maxHBarrelPflowTower") ;
   cutsCfgPflow_.maxHEndcapsTower = cfg.getParameter<double>("maxHEndcapsPflowTower") ;
+  cutsCfgPflow_.HoETowerPtCut = cfg.getParameter<double>("HoEPflowTowerPtCut") ;
 
   cutsCfgPflow_.maxDeltaEtaBarrel = cfg.getParameter<double>("maxDeltaEtaBarrelPflow") ;
   cutsCfgPflow_.maxDeltaEtaEndcaps = cfg.getParameter<double>("maxDeltaEtaEndcapsPflow") ;
