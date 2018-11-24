@@ -131,6 +131,10 @@ class GsfElectronAlgo {
       double maxHBarrelTower ;
       double maxHEndcapsTower ;
       double HoETowerPtCut;
+      double maxFull5x5_sigmaIetaIetaTowerBarrel;
+      double maxFull5x5_sigmaIetaIetaTowerEndcap;
+      double maxDeltaEtaSeedClusterTrackAtVtxTowerBarrel;
+      double maxDeltaEtaSeedClusterTrackAtVtxTowerEndcap;
 
       // maximum eta difference between the supercluster position and the track position at the closest impact to the supercluster
       double maxDeltaEtaBarrel ;

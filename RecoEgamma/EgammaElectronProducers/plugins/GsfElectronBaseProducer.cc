@@ -237,6 +237,10 @@ GsfElectronBaseProducer::GsfElectronBaseProducer( const edm::ParameterSet& cfg, 
   cutsCfg_.maxHBarrelTower = cfg.getParameter<double>("maxHBarrelTower") ;
   cutsCfg_.maxHEndcapsTower = cfg.getParameter<double>("maxHEndcapsTower") ;
   cutsCfg_.HoETowerPtCut = cfg.getParameter<double>("HoETowerPtCut") ;
+  cutsCfg_.maxFull5x5_sigmaIetaIetaTowerBarrel = cfg.getParameter<double>("maxFull5x5_sigmaIetaIetaTowerBarrel");
+  cutsCfg_.maxFull5x5_sigmaIetaIetaTowerEndcap = cfg.getParameter<double>("maxFull5x5_sigmaIetaIetaTowerEndcap");
+  cutsCfg_.maxDeltaEtaSeedClusterTrackAtVtxTowerBarrel = cfg.getParameter<double>("maxDeltaEtaSeedClusterTrackAtVtxTowerBarrel");
+  cutsCfg_.maxDeltaEtaSeedClusterTrackAtVtxTowerEndcap = cfg.getParameter<double>("maxDeltaEtaSeedClusterTrackAtVtxTowerEndcap");
 
   cutsCfg_.maxDeltaEtaBarrel = cfg.getParameter<double>("maxDeltaEtaBarrel") ;
   cutsCfg_.maxDeltaEtaEndcaps = cfg.getParameter<double>("maxDeltaEtaEndcaps") ;
@@ -271,6 +275,10 @@ GsfElectronBaseProducer::GsfElectronBaseProducer( const edm::ParameterSet& cfg, 
   cutsCfgPflow_.maxHBarrelTower = cfg.getParameter<double>("maxHBarrelPflowTower") ;
   cutsCfgPflow_.maxHEndcapsTower = cfg.getParameter<double>("maxHEndcapsPflowTower") ;
   cutsCfgPflow_.HoETowerPtCut = cfg.getParameter<double>("HoEPflowTowerPtCut") ;
+  cutsCfgPflow_.maxFull5x5_sigmaIetaIetaTowerBarrel = cfg.getParameter<double>("maxFull5x5_sigmaIetaIetaPflowTowerBarrel");
+  cutsCfgPflow_.maxFull5x5_sigmaIetaIetaTowerEndcap = cfg.getParameter<double>("maxFull5x5_sigmaIetaIetaPflowTowerEndcap");
+  cutsCfgPflow_.maxDeltaEtaSeedClusterTrackAtVtxTowerBarrel = cfg.getParameter<double>("maxDeltaEtaSeedClusterTrackAtVtxPflowTowerBarrel");
+  cutsCfgPflow_.maxDeltaEtaSeedClusterTrackAtVtxTowerEndcap = cfg.getParameter<double>("maxDeltaEtaSeedClusterTrackAtVtxPflowTowerEndcap");
 
   cutsCfgPflow_.maxDeltaEtaBarrel = cfg.getParameter<double>("maxDeltaEtaBarrelPflow") ;
   cutsCfgPflow_.maxDeltaEtaEndcaps = cfg.getParameter<double>("maxDeltaEtaEndcapsPflow") ;
