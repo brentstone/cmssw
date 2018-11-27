@@ -241,6 +241,7 @@ GsfElectronBaseProducer::GsfElectronBaseProducer( const edm::ParameterSet& cfg, 
   cutsCfg_.maxFull5x5_sigmaIetaIetaTowerEndcap = cfg.getParameter<double>("maxFull5x5_sigmaIetaIetaTowerEndcap");
   cutsCfg_.maxDeltaEtaSeedClusterTrackAtVtxTowerBarrel = cfg.getParameter<double>("maxDeltaEtaSeedClusterTrackAtVtxTowerBarrel");
   cutsCfg_.maxDeltaEtaSeedClusterTrackAtVtxTowerEndcap = cfg.getParameter<double>("maxDeltaEtaSeedClusterTrackAtVtxTowerEndcap");
+  cutsCfg_.towerPtSafetyThreshold = cfg.getParameter<double>("towerPtSafetyThreshold");
 
   cutsCfg_.maxDeltaEtaBarrel = cfg.getParameter<double>("maxDeltaEtaBarrel") ;
   cutsCfg_.maxDeltaEtaEndcaps = cfg.getParameter<double>("maxDeltaEtaEndcaps") ;
@@ -279,6 +280,7 @@ GsfElectronBaseProducer::GsfElectronBaseProducer( const edm::ParameterSet& cfg, 
   cutsCfgPflow_.maxFull5x5_sigmaIetaIetaTowerEndcap = cfg.getParameter<double>("maxFull5x5_sigmaIetaIetaPflowTowerEndcap");
   cutsCfgPflow_.maxDeltaEtaSeedClusterTrackAtVtxTowerBarrel = cfg.getParameter<double>("maxDeltaEtaSeedClusterTrackAtVtxPflowTowerBarrel");
   cutsCfgPflow_.maxDeltaEtaSeedClusterTrackAtVtxTowerEndcap = cfg.getParameter<double>("maxDeltaEtaSeedClusterTrackAtVtxPflowTowerEndcap");
+  cutsCfgPflow_.towerPtSafetyThreshold = cfg.getParameter<double>("towerPtSafetyThresholdPflow");
 
   cutsCfgPflow_.maxDeltaEtaBarrel = cfg.getParameter<double>("maxDeltaEtaBarrelPflow") ;
   cutsCfgPflow_.maxDeltaEtaEndcaps = cfg.getParameter<double>("maxDeltaEtaEndcapsPflow") ;
