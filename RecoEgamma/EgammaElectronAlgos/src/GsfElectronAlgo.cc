@@ -1123,7 +1123,8 @@ bool GsfElectronAlgo::isPreselected( GsfElectron * ele )
 		    return passmva;
 		}	
 		else{
-		  return passCutBased || passPF || passmva;
+		  if (ele->hcalOverEcal() < 0.15) return (passCutBased || passPF || passmva);
+                  else return passCutBased;
 		}
 	}
 	else{
@@ -1181,12 +1182,18 @@ void GsfElectronAlgo::setCutBasedPreselectionFlag( GsfElectron * ele, const reco
 
   // HoE cuts
   LogTrace("GsfElectronAlgo") << "HoE1 : " << ele->hcalDepth1OverEcal() << ", HoE2 : " << ele->hcalDepth2OverEcal();
-  double had = ele->hcalOverEcal()*ele->superCluster()->energy() ;
+  double hoeCone = ele->hcalDepth1OverEcal() + ele->hcalDepth2OverEcal();
+  double hoeTower = ele->hcalDepth1OverEcalBc() + ele->hcalDepth2OverEcalBc();
   const reco::CaloCluster & seedCluster = *(ele->superCluster()->seed()) ;
   int detector = seedCluster.hitsAndFractions()[0].first.subdetId() ;
   bool HoEveto = false ;
-  if (detector==EcalBarrel && (had<cfg->maxHBarrel || (had/ele->superCluster()->energy())<cfg->maxHOverEBarrel)) HoEveto=true;
-  else if (detector==EcalEndcap && (had<cfg->maxHEndcaps || (had/ele->superCluster()->energy())<cfg->maxHOverEEndcaps)) HoEveto=true;
+  double scle = ele->superCluster()->energy();
+  bool passHoETowerCuts = false;
+  if (detector==EcalBarrel) passHoETowerCuts = (ele->pt() > cfg->HoETowerPtCut && ele->full5x5_sigmaIetaIeta() < cfg->maxFull5x5_sigmaIetaIetaTowerBarrel && abs(ele->deltaEtaSeedClusterTrackAtVtx()) < cfg->maxDeltaEtaSeedClusterTrackAtVtxTowerBarrel) || (ele->pt() > cfg->towerPtSafetyThreshold);
+  else if (detector==EcalEndcap) passHoETowerCuts = (ele->pt() > cfg->HoETowerPtCut && ele->full5x5_sigmaIetaIeta() < cfg->maxFull5x5_sigmaIetaIetaTowerEndcap && abs(ele->deltaEtaSeedClusterTrackAtVtx()) < cfg->maxDeltaEtaSeedClusterTrackAtVtxTowerEndcap) || (ele->pt() > cfg->towerPtSafetyThreshold);
+
+  if (detector=EcalBarrel && (hoeCone*scle<cfg->maxHBarrelCone || hoeTower*scle<cfg->maxHBarrelTower || (hoeCone<cfg->maxHOverEBarrelCone || (hoeTower<cfg->maxHOverEBarrelTower && passHoETowerCuts)))) HoEveto=true;
+  else if (detector==EcalEndcap && (hoeCone*scle<cfg->maxHEndcapsCone || hoeTower*scle<cfg->maxHEndcapsTower || (hoeCone<cfg->maxHOverEEndcapsCone || (hoeTower<cfg->maxHOverEEndcapsTower && passHoETowerCuts)))) HoEveto=true;
   if ( !HoEveto ) return ;
   LogTrace("GsfElectronAlgo") << "H/E criteria are satisfied";
 

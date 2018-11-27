@@ -30,10 +30,14 @@ ecalDrivenElectronSeedsParameters = cms.PSet(
         HGCBHInput = cms.InputTag('HGCalRecHit:HGCHEBRecHits')
         ),
     #maxHOverE = cms.double(0.1),
-    maxHOverEBarrel = cms.double(0.15),
-    maxHOverEEndcaps = cms.double(0.15),
-    maxHBarrel = cms.double(0.0),
-    maxHEndcaps = cms.double(0.0),
+    maxHOverEBarrelCone = cms.double(0.15),
+    maxHOverEEndcapsCone = cms.double(0.15),
+    maxHBarrelCone = cms.double(0.0),
+    maxHEndcapsCone = cms.double(0.0),
+    maxHOverEBarrelTower = cms.double(0.15),
+    maxHOverEEndcapsTower = cms.double(0.15),
+    maxHBarrelTower = cms.double(0.0),
+    maxHEndcapsTower = cms.double(0.0),
     # H/E rechits
     hcalRecHits = cms.InputTag("hbhereco"), # OBSOLETE
     hOverEHBMinE = cms.double(0.7),         # OBSOLETE

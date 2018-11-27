@@ -94,11 +94,15 @@ ElectronSeedProducer::ElectronSeedProducer( const edm::ParameterSet& iConfig )
        const edm::ParameterSet& hgcCfg = conf_.getParameterSet("HGCalConfig");
        hgcClusterTools_.reset( new hgcal::ClusterTools(hgcCfg, theconsumes) );
      }
-     
-     maxHOverEBarrel_=conf_.getParameter<double>("maxHOverEBarrel") ;
-     maxHOverEEndcaps_=conf_.getParameter<double>("maxHOverEEndcaps") ;
-     maxHBarrel_=conf_.getParameter<double>("maxHBarrel") ;
-     maxHEndcaps_=conf_.getParameter<double>("maxHEndcaps") ;
+
+     maxHOverEBarrelCone_=conf_.getParameter<double>("maxHOverEBarrelCone") ;
+     maxHOverEEndcapsCone_=conf_.getParameter<double>("maxHOverEEndcapsCone") ;
+     maxHBarrelCone_=conf_.getParameter<double>("maxHBarrelCone") ;
+     maxHEndcapsCone_=conf_.getParameter<double>("maxHEndcapsCone") ;
+     maxHOverEBarrelTower_=conf_.getParameter<double>("maxHOverEBarrelTower") ;
+     maxHOverEEndcapsTower_=conf_.getParameter<double>("maxHOverEEndcapsTower") ;
+     maxHBarrelTower_=conf_.getParameter<double>("maxHBarrelTower") ;
+     maxHEndcapsTower_=conf_.getParameter<double>("maxHEndcapsTower") ;
    }
 
   applySigmaIEtaIEtaCut_ = conf_.getParameter<bool>("applySigmaIEtaIEtaCut");
@@ -263,30 +267,35 @@ void ElectronSeedProducer::filterClusters
 //      if ((applyHOverECut_==true)&&((hcalHelper_->hcalESum(scl)/scl.energy()) > maxHOverE_))
 //       { continue ; }
 //      sclRefs.push_back(edm::Ref<reco::SuperClusterCollection>(superClusters,i)) ;
-       double had1, had2, had, scle ;
+       double had1Cone, had2Cone, hadCone, had1Tower, had2Tower, hadTower, scle ;
 
        bool HoeVeto = false ;
        if (applyHOverECut_==true)
         {
-         had1 = hcalHelper_->hcalESumDepth1(scl);
-         had2 = hcalHelper_->hcalESumDepth2(scl);
-         had = had1+had2 ;
+         had1Cone = hcalHelper_->hcalESumDepth1(scl);
+         had2Cone = hcalHelper_->hcalESumDepth2(scl);
+         hadCone = had1Cone+had2Cone;
+         std::vector<CaloTowerDetId> towersBc = hcalHelper_->hcalTowersBehindClusters(scl);
+         had1Tower = hcalHelper_->hcalESumDepth1BehindClusters(towersBc);
+         had2Tower = hcalHelper_->hcalESumDepth2BehindClusters(towersBc);
+         hadTower = had1Tower+had2Tower ;
+
          scle = scl.energy() ;
          int det_group = scl.seed()->hitsAndFractions()[0].first.det() ;
          int detector = scl.seed()->hitsAndFractions()[0].first.subdetId() ;
-         if ( detector==EcalBarrel && (had<maxHBarrel_ || had/scle<maxHOverEBarrel_)) HoeVeto=true;
-         else if( !allowHGCal_ && detector==EcalEndcap && (had<maxHEndcaps_ || had/scle<maxHOverEEndcaps_) ) HoeVeto=true;
+         if (detector==EcalBarrel && (hadCone<maxHBarrelCone_ || hadTower<maxHBarrelTower_ || hadCone/scle<maxHOverEBarrelCone_ || hadTower/scle<maxHOverEBarrelTower_)) HoeVeto=true;
+         else if( !allowHGCal_ && detector==EcalEndcap && (hadCone<maxHEndcapsCone_ || hadTower<maxHEndcapsTower_ || hadCone/scle<maxHOverEEndcapsCone_ || hadTower/scle<maxHOverEEndcapsTower_) ) HoeVeto=true;
          else if( allowHGCal_ && EcalTools::isHGCalDet((DetId::Detector)det_group) ) {
            float had_fraction = hgcClusterTools_->getClusterHadronFraction(*(scl.seed()));
-           had1 = had_fraction*scl.seed()->energy();
-           had2 = 0.;
-           HoeVeto= ( had_fraction >= 0.f && had_fraction < maxHOverEEndcaps_ );
+           had1Cone = had_fraction*scl.seed()->energy();
+           had2Cone = 0.;
+           HoeVeto= ( had_fraction >= 0.f && had_fraction < maxHOverEEndcapsCone_ );
          }
          if (HoeVeto)
           {
            sclRefs.push_back(edm::Ref<reco::SuperClusterCollection>(superClusters,i)) ;
-           hoe1s.push_back(had1/scle) ;
-           hoe2s.push_back(had2/scle) ;
+           hoe1s.push_back(had1Cone/scle) ;
+           hoe2s.push_back(had2Cone/scle) ;
           }
         }
        else
@@ -348,13 +357,15 @@ ElectronSeedProducer::fillDescriptions(edm::ConfigurationDescriptions& descripti
     psd0.add<double>("pPhiMax1",0.125);
     psd0.add<double>("HighPtThreshold",35.0);
     psd0.add<double>("r2MinF",-0.15);
-    psd0.add<double>("maxHBarrel",0.0);
+    psd0.add<double>("maxHBarrelCone",0.0);
+    psd0.add<double>("maxHBarrelTower",0.0);
     psd0.add<double>("DeltaPhi1Low",0.23);
     psd0.add<double>("DeltaPhi1High",0.08);
     psd0.add<double>("ePhiMin1",-0.125);
     psd0.add<edm::InputTag>("hcalTowers",edm::InputTag("towerMaker"));
     psd0.add<double>("LowPtThreshold",5.0);
-    psd0.add<double>("maxHOverEBarrel",0.15);
+    psd0.add<double>("maxHOverEBarrelCone",0.15);
+    psd0.add<double>("maxHOverEBarrelTower",0.15);
     psd0.add<double>("maxSigmaIEtaIEtaBarrel", 0.5);
     psd0.add<double>("maxSigmaIEtaIEtaEndcaps", 0.5);
     psd0.add<bool>("dynamicPhiRoad",true);
@@ -363,7 +374,8 @@ ElectronSeedProducer::fillDescriptions(edm::ConfigurationDescriptions& descripti
     psd0.add<double>("SizeWindowENeg",0.675);
     psd0.add<double>("nSigmasDeltaZ1",5.0);
     psd0.add<double>("rMaxI",0.2);
-    psd0.add<double>("maxHEndcaps",0.0);
+    psd0.add<double>("maxHEndcapsCone",0.0);
+    psd0.add<double>("maxHEndcapsTower",0.0);
     psd0.add<bool>("preFilteredSeeds",false);
     psd0.add<double>("r2MaxF",0.15);
     psd0.add<double>("hOverEConeSize",0.15);
@@ -376,7 +388,8 @@ ElectronSeedProducer::fillDescriptions(edm::ConfigurationDescriptions& descripti
     psd0.add<edm::InputTag>("hcalRecHits",edm::InputTag("hbhereco"));
     psd0.add<double>("z2MinB",-0.09);
     psd0.add<double>("rMinI",-0.2);
-    psd0.add<double>("maxHOverEEndcaps",0.15);
+    psd0.add<double>("maxHOverEEndcapsCone",0.15);
+    psd0.add<double>("maxHOverEEndcapsTower",0.15);
     psd0.add<double>("hOverEHBMinE",0.7);
     psd0.add<bool>("useRecoVertex",false);
     psd0.add<edm::InputTag>("beamSpot",edm::InputTag("offlineBeamSpot"));

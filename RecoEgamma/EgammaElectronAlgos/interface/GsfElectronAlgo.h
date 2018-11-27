@@ -122,10 +122,20 @@ class GsfElectronAlgo {
       double minEOverPEndcaps ;
 
       // H/E
-      double maxHOverEBarrel ;
-      double maxHOverEEndcaps ;
-      double maxHBarrel ;
-      double maxHEndcaps ;
+      double maxHOverEBarrelCone ;
+      double maxHOverEEndcapsCone ;
+      double maxHBarrelCone ;
+      double maxHEndcapsCone ;
+      double maxHOverEBarrelTower ;
+      double maxHOverEEndcapsTower ;
+      double maxHBarrelTower ;
+      double maxHEndcapsTower ;
+      double HoETowerPtCut;
+      double maxFull5x5_sigmaIetaIetaTowerBarrel;
+      double maxFull5x5_sigmaIetaIetaTowerEndcap;
+      double maxDeltaEtaSeedClusterTrackAtVtxTowerBarrel;
+      double maxDeltaEtaSeedClusterTrackAtVtxTowerEndcap;
+      double towerPtSafetyThreshold;
 
       // maximum eta difference between the supercluster position and the track position at the closest impact to the supercluster
       double maxDeltaEtaBarrel ;
